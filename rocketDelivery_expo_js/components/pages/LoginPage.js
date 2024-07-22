@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Button } from 'react-native';
+import { NGROK_URL } from '@env';
 
 const LoginPage = ({ navigation }) => {
   const [email, setEmail] = useState('erica.ger@gmail.com');
@@ -10,7 +11,7 @@ const LoginPage = ({ navigation }) => {
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('https://20ff-24-192-233-98.ngrok-free.app/api/login', {
+      const response = await fetch(`${NGROK_URL}/api/login`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

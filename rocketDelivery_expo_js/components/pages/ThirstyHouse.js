@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Image } from 'react-native';
+import { NGROK_URL } from '@env'; // Import NGROK_URL
 
 const ThirstyHouse = () => {
   const [restaurant, setRestaurant] = useState(null);
@@ -13,7 +14,7 @@ const ThirstyHouse = () => {
     const fetchRestaurantAndDishes = async () => {
       try {
         // Fetch restaurant details
-        const restaurantResponse = await fetch('https://20ff-24-192-233-98.ngrok-free.app/api/restaurants');
+        const restaurantResponse = await fetch(`${NGROK_URL}/api/restaurants`);
         if (restaurantResponse.ok) {
           const restaurantData = await restaurantResponse.json();
           const restaurant = restaurantData.find(rest => rest.id === 1);
@@ -24,7 +25,7 @@ const ThirstyHouse = () => {
         }
 
         // Fetch dishes
-        const dishesResponse = await fetch('https://20ff-24-192-233-98.ngrok-free.app/api/products?restaurant=1');
+        const dishesResponse = await fetch(`${NGROK_URL}/api/products?restaurant=1`);
         if (dishesResponse.ok) {
           const dishesData = await dishesResponse.json();
           const sortedData = dishesData.sort((a, b) => a.cost - b.cost);
@@ -150,3 +151,4 @@ const styles = StyleSheet.create({
 });
 
 export default ThirstyHouse;
+

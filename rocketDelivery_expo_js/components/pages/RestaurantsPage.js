@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Dimensions, Image, TouchableOpacity } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
 import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
+import { NGROK_URL } from '@env'; // Import NGROK_URL
 
 const RestaurantsPage = () => {
   const [restaurants, setRestaurants] = useState([]);
@@ -16,7 +17,7 @@ const RestaurantsPage = () => {
   useEffect(() => {
     const fetchRestaurants = async () => {
       try {
-        const response = await fetch('https://20ff-24-192-233-98.ngrok-free.app/api/restaurants');
+        const response = await fetch(`${NGROK_URL}/api/restaurants`);
         if (response.ok) {
           const data = await response.json();
           setRestaurants(data);
@@ -199,5 +200,3 @@ const styles = StyleSheet.create({
 });
 
 export default RestaurantsPage;
-
-

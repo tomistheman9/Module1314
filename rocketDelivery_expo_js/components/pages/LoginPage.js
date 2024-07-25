@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Button } from 'react-native';
 import { NGROK_URL } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const LoginPage = ({ navigation }) => {
   const [email, setEmail] = useState('erica.ger@gmail.com');
@@ -24,9 +25,15 @@ const LoginPage = ({ navigation }) => {
 
       if (response.ok) {
         const data = await response.json();
-        // Save the token or any other data you need here
-        // For example: AsyncStorage.setItem('token', data.token);
-        
+        await AsyncStorage.setItem('user_id', data.user_id.toString());
+        await AsyncStorage.setItem('customer_id', data.customer_id?.toString() || '');
+        await AsyncStorage.setItem('courier_id', data.courier_id?.toString() || '');
+
+        // Log the stored values
+        console.log('user_id:', data.user_id);
+        console.log('customer_id:', data.customer_id);
+        console.log('courier_id:', data.courier_id);
+
         // Navigate to the Restaurants page
         navigation.navigate('Restaurants');
       } else {
@@ -34,7 +41,7 @@ const LoginPage = ({ navigation }) => {
         setErrorMessage(errorData.message || 'Login Failed');
       }
     } catch (error) {
-      setErrorMessage('Something went wrong');
+      setErrorMessage(error.message);
     }
   };
 

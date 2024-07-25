@@ -1,10 +1,8 @@
-// File: RestaurantsPage.js
-
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, Dimensions, Image, TouchableOpacity } from 'react-native';
 import RNPickerSelect from 'react-native-picker-select';
-import { useNavigation } from '@react-navigation/native'; // Import useNavigation hook
-import { NGROK_URL } from '@env'; // Import NGROK_URL
+import { useNavigation } from '@react-navigation/native';
+import { NGROK_URL } from '@env';
 
 const RestaurantsPage = () => {
   const [restaurants, setRestaurants] = useState([]);
@@ -12,7 +10,7 @@ const RestaurantsPage = () => {
   const [error, setError] = useState('');
   const [selectedRating, setSelectedRating] = useState(null);
   const [selectedPrice, setSelectedPrice] = useState(null);
-  const navigation = useNavigation(); // Use navigation hook
+  const navigation = useNavigation();
 
   useEffect(() => {
     const fetchRestaurants = async () => {
@@ -22,10 +20,11 @@ const RestaurantsPage = () => {
           const data = await response.json();
           setRestaurants(data);
         } else {
-          setError('Failed to load restaurants');
+          const errorData = await response.json();
+          setError(`Failed to load restaurants: ${errorData.message}`);
         }
       } catch (error) {
-        setError('Something went wrong');
+        setError(`Something went wrong: ${error.message}`);
       } finally {
         setLoading(false);
       }
@@ -94,7 +93,7 @@ const RestaurantsPage = () => {
             style={{
               inputIOS: styles.dropdown,
               inputAndroid: styles.dropdown,
-              placeholder: styles.placeholder, // Added placeholder style
+              placeholder: styles.placeholder,
             }}
           />
         </View>
@@ -111,7 +110,7 @@ const RestaurantsPage = () => {
             style={{
               inputIOS: styles.dropdown,
               inputAndroid: styles.dropdown,
-              placeholder: styles.placeholder, // Added placeholder style
+              placeholder: styles.placeholder,
             }}
           />
         </View>
@@ -122,7 +121,7 @@ const RestaurantsPage = () => {
         renderItem={renderRestaurant}
         numColumns={2}
         columnWrapperStyle={styles.row}
-        key={selectedRating + '_' + selectedPrice} // Add key prop to force re-render
+        key={selectedRating + '_' + selectedPrice}
       />
     </View>
   );
@@ -167,8 +166,8 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   placeholder: {
-    color: '#000', // Set placeholder color
-    textAlign: 'center', // Center placeholder text
+    color: '#000',
+    textAlign: 'center',
   },
   row: {
     flex: 1,
@@ -182,7 +181,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderColor: '#ccc',
     marginBottom: 10,
-    alignItems: 'center', // Align items to center to place image above text
+    alignItems: 'center',
   },
   restaurantImage: {
     width: 100,

@@ -13,6 +13,7 @@ const ThirstyHouse = ({ navigation, userDetails }) => {
   const [quantities, setQuantities] = useState({});
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
+  const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
 
   useEffect(() => {
     const fetchRestaurantAndDishes = async () => {
@@ -102,9 +103,13 @@ const ThirstyHouse = ({ navigation, userDetails }) => {
         console.error('Failed to create order', response.statusText);
         const errorData = await response.json();
         console.error('Error data:', errorData);
+        setIsModalVisible(false);
+        setIsErrorModalVisible(true);
       }
     } catch (error) {
       console.error('Error:', error);
+      setIsModalVisible(false);
+      setIsErrorModalVisible(true);
     }
   };
 
@@ -218,12 +223,35 @@ const ThirstyHouse = ({ navigation, userDetails }) => {
       >
         <View style={styles.modalBackground}>
           <View style={styles.successModalContainer}>
-            <Text style={styles.successModalText}>Order Successful!</Text>
+            <Text style={styles.successModalText}>
+              Order Successful! <Text style={styles.successCheckMark}>✔️</Text>
+            </Text>
             <Image
               source={require('../../assets/images/boratgreatsuccess.jpg')}
               style={styles.successImage}
             />
             <TouchableOpacity style={styles.closeButton} onPress={() => setIsSuccessModalVisible(false)}>
+              <Text style={styles.closeButtonText}>Close</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+      <Modal
+        visible={isErrorModalVisible}
+        animationType="fade"
+        transparent={true}
+        onRequestClose={() => setIsErrorModalVisible(false)}
+      >
+        <View style={styles.modalBackground}>
+          <View style={styles.errorModalContainer}>
+            <Text style={styles.errorModalText}>
+              Failure to Order, please try again... <Text style={styles.errorCheckMark}>❌</Text>
+            </Text>
+            <Image
+              source={require('../../assets/images/leoFailure.jpg')}
+              style={styles.errorImage}
+            />
+            <TouchableOpacity style={styles.closeButton} onPress={() => setIsErrorModalVisible(false)}>
               <Text style={styles.closeButtonText}>Close</Text>
             </TouchableOpacity>
           </View>
@@ -405,7 +433,33 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     marginBottom: 20,
   },
+  successCheckMark: {
+    color: 'green',
+    fontSize: 20,
+  },
   successImage: {
+    width: '100%',
+    height: 200,
+    marginBottom: 20,
+  },
+  errorModalContainer: {
+    width: '80%',
+    maxHeight: '50%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  errorModalText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginBottom: 20,
+  },
+  errorCheckMark: {
+    color: 'red',
+    fontSize: 20,
+  },
+  errorImage: {
     width: '100%',
     height: 200,
     marginBottom: 20,

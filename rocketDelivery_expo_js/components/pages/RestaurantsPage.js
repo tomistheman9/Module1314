@@ -8,8 +8,8 @@ const RestaurantsPage = () => {
   const [restaurants, setRestaurants] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [selectedRating, setSelectedRating] = useState(null);
-  const [selectedPrice, setSelectedPrice] = useState(null);
+  const [selectedRating, setSelectedRating] = useState('--Select--');
+  const [selectedPrice, setSelectedPrice] = useState('--Select--');
   const navigation = useNavigation();
 
   useEffect(() => {
@@ -36,20 +36,40 @@ const RestaurantsPage = () => {
   const handleSort = () => {
     let sortedRestaurants = [...restaurants];
 
-    if (selectedRating) {
+    if (selectedRating !== '--Select--') {
       sortedRestaurants = sortedRestaurants.filter((restaurant) => restaurant.rating == selectedRating);
     }
 
-    if (selectedPrice) {
+    if (selectedPrice !== '--Select--') {
       sortedRestaurants = sortedRestaurants.filter((restaurant) => restaurant.price_range == selectedPrice);
     }
 
     return sortedRestaurants;
   };
 
+  const handleRestaurantPress = (restaurantId) => {
+    if (restaurantId === 1) {
+      navigation.navigate('ThirstyHouse');
+    } else if (restaurantId === 2) {
+      navigation.navigate('SpiceGrill');
+    } else if (restaurantId === 3) {
+      navigation.navigate('SpiceSushi');
+    } else if (restaurantId === 4) {
+      navigation.navigate('SweetSubs');
+    } else if (restaurantId === 5) {
+      navigation.navigate('FastJuiceBar');
+    } else if (restaurantId === 6) {
+      navigation.navigate('FastKing');
+    } else if (restaurantId === 7) {
+      navigation.navigate('SilverGrillTap');
+    } else if (restaurantId === 8) {
+      navigation.navigate('YIRHouse');
+    }
+  };
+
   const renderRestaurant = ({ item }) => (
     <View style={styles.restaurantContainer}>
-      <TouchableOpacity onPress={() => navigation.navigate('ThirstyHouse')}>
+      <TouchableOpacity onPress={() => handleRestaurantPress(item.id)}>
         <Image source={require('../../assets/images/FoodPic.jpg')} style={styles.restaurantImage} />
       </TouchableOpacity>
       <Text style={styles.restaurantName}>{item.name}</Text>
@@ -83,18 +103,18 @@ const RestaurantsPage = () => {
           <RNPickerSelect
             onValueChange={(value) => setSelectedRating(value)}
             items={[
+              { label: '--Select--', value: '--Select--' },
               { label: '1', value: 1 },
               { label: '2', value: 2 },
               { label: '3', value: 3 },
               { label: '4', value: 4 },
               { label: '5', value: 5 },
             ]}
-            placeholder={{ label: '--Select--', value: null }}
             style={{
               inputIOS: styles.dropdown,
               inputAndroid: styles.dropdown,
-              placeholder: styles.placeholder,
             }}
+            value={selectedRating}
           />
         </View>
         <View style={styles.dropdownWrapper}>
@@ -102,16 +122,16 @@ const RestaurantsPage = () => {
           <RNPickerSelect
             onValueChange={(value) => setSelectedPrice(value)}
             items={[
+              { label: '--Select--', value: '--Select--' },
               { label: '1', value: 1 },
               { label: '2', value: 2 },
               { label: '3', value: 3 },
             ]}
-            placeholder={{ label: '--Select--', value: null }}
             style={{
               inputIOS: styles.dropdown,
               inputAndroid: styles.dropdown,
-              placeholder: styles.placeholder,
             }}
+            value={selectedPrice}
           />
         </View>
       </View>
@@ -121,7 +141,7 @@ const RestaurantsPage = () => {
         renderItem={renderRestaurant}
         numColumns={2}
         columnWrapperStyle={styles.row}
-        key={selectedRating + '_' + selectedPrice}
+        key={selectedRating + '_' + selectedPrice + '_' + restaurants.length}
       />
     </View>
   );
@@ -165,10 +185,6 @@ const styles = StyleSheet.create({
     borderRadius: 5,
     textAlign: 'center',
   },
-  placeholder: {
-    color: '#000',
-    textAlign: 'center',
-  },
   row: {
     flex: 1,
     justifyContent: 'space-between',
@@ -199,3 +215,4 @@ const styles = StyleSheet.create({
 });
 
 export default RestaurantsPage;
+

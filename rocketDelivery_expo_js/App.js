@@ -11,8 +11,10 @@ import SweetSubs from './components/pages/SweetSubs';
 import FastJuiceBar from './components/pages/FastJuiceBar';
 import FastKing from './components/pages/FastKing';
 import SilverGrillTap from './components/pages/SilverGrillTap';
-import YIRHouse from './components/pages/YIRHouse';  // Import the new page
+import YIRHouse from './components/pages/YIRHouse';
 import TitlePage from './components/pages/TitlePage';
+import CourierHome from './components/pages/CourierHome';
+import DeliveryDetails from './components/pages/DeliveryDetails'; // Import the new DeliveryDetails page
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Stack = createNativeStackNavigator();
@@ -47,6 +49,7 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator initialRouteName="Login">
         <Stack.Screen name="Login" component={LoginPage} />
+        <Stack.Screen name="CourierHome" component={CourierHome} options={{ headerShown: false }} />
         <Stack.Screen name="Restaurants" options={{ headerShown: false }}>
           {props => (
             <TitlePage {...props} routeName="Restaurants">
@@ -114,6 +117,13 @@ const App = () => {
           {props => (
             <TitlePage {...props} routeName="YIRHouse">
               <YIRHouse {...props} userDetails={userDetails} />
+            </TitlePage>
+          )}
+        </Stack.Screen>
+        <Stack.Screen name="DeliveryDetails" options={{ headerShown: false }}>
+          {props => (
+            <TitlePage {...props} routeName="DeliveryDetails">
+              <DeliveryDetails {...props} userDetails={userDetails} />
             </TitlePage>
           )}
         </Stack.Screen>

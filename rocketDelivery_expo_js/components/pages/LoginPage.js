@@ -1,5 +1,3 @@
-// File: LoginPage.js
-
 import React, { useState } from 'react';
 import { View, Text, TextInput, StyleSheet, Button } from 'react-native';
 import { NGROK_URL } from '@env';
@@ -34,8 +32,12 @@ const LoginPage = ({ navigation }) => {
         console.log('customer_id:', data.customer_id);
         console.log('courier_id:', data.courier_id);
 
-        // Navigate to the Restaurants page
-        navigation.navigate('Restaurants');
+        // Navigate based on courier_id
+        if (data.courier_id && data.courier_id !== 'null') {
+          navigation.navigate('CourierHome');
+        } else {
+          navigation.navigate('Restaurants');
+        }
       } else {
         const errorData = await response.json();
         setErrorMessage(errorData.message || 'Login Failed');

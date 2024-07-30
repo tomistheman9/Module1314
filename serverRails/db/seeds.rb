@@ -1,9 +1,28 @@
 # We create a user to be able to login into our back office and test it
+
+# erica = User, Customer, Courier
 erica = User.create!(email: "erica.ger@gmail.com", name: "Erica Ger", password: "password")
 erica_address = Address.create!(street_address: "123 CodeBoxx Boulevard", city: "Montreal", postal_code: "H4G52Z")
+Employee.create!(user_id: erica.id, address_id: erica_address.id, phone: "5145126145", email: "ethebeast@hotmail.com")
+Customer.create!(user_id: erica.id, address_id: erica_address.id, phone: "5145126145", email: "ethebeast@hotmail.com", active: true)
 
-# Erica is an employee!
-Employee.create!(user_id: erica.id, address_id: erica_address.id, phone: "5141231234", email: "erica.ger@codeboxxacademy.com")
+# malamute = Customer
+malamute = User.create!(email: "malamut@gmail.com", name: "Mala Mute", password: "password")
+malamute_address = Address.create!(street_address: "123 CodeBoxx Boulevard", city: "Montreal", postal_code: "H4G52Z")
+Customer.create!(user_id: malamute.id, address_id: malamute_address.id, phone: "5145126145", email: "ethebeast@hotmail.com", active: true)
+
+# le_mit = Courier
+le_mit = User.create!(email: "lemit@gmail.com", name: "Le Mit", password: "password")
+le_mit_address = Address.create!(street_address: "123 CodeBoxx Boulevard", city: "Montreal", postal_code: "H4G52Z")
+
+# Generate courier statuses
+courier_statuses = %w[free busy full offline]
+courier_statuses.each do |status|
+  CourierStatus.create!(name: status)
+end
+
+Courier.create!(user_id: erica.id, address_id: erica_address.id, phone: "5145126145", email: "ethebeast@hotmail.com", courier_status_id: rand(1..courier_statuses.size), active: true)
+Courier.create!(user_id: le_mit.id, address_id: le_mit_address.id, phone: "5145126145", email: "ethebeast@hotmail.com", courier_status_id: rand(1..courier_statuses.size), active: true)
 
 # Generate users
 20.times do
@@ -41,12 +60,6 @@ end
     email: Faker::Internet.unique.email,
     active: true
   )
-end
-
-# Generate courier statuses
-courier_statuses = %w[free busy full offline]
-courier_statuses.each do |status|
-  CourierStatus.create!(name: status)
 end
 
 # Generate couriers
@@ -90,7 +103,6 @@ Restaurant.all.each do |restaurant|
     )
   end
 end
-
 
 # Generate orders
 100.times do

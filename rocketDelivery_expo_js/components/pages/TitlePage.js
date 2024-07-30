@@ -1,9 +1,8 @@
-// File: TitlePage.js
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image, SafeAreaView } from 'react-native';
 import FontAwesome5 from 'react-native-vector-icons/FontAwesome5';
 
-const TitlePage = ({ navigation, children }) => {
+const TitlePage = ({ navigation, children, routeName }) => {
   const handleLogout = () => {
     navigation.navigate('Login');
   };

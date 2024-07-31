@@ -1,3 +1,5 @@
+require 'twilio-ruby'
+
 module Api
   class ApiOrdersController < ActionController::Base
     skip_before_action :verify_authenticity_token
@@ -60,6 +62,23 @@ module Api
         order.product_orders.create!(product_id: product.id, product_quantity: product_params[:quantity].to_i, product_unit_cost: product.cost)
       end
 
+      # puts `send_sms:`, send_sms
+      # If sms parameters, use method to send sms confirmation
+      if params[:send_sms] == true
+        puts `send_sms:`, send_sms
+        customer_phone_number = order.customer.phone
+        restaurant_phone_number = ENV['TWILIO_PHONE_NUMBER']
+        send_sms_notification(customer_phone_number, restaurant_phone_number, "Your order has been confirmed!")
+      end
+
+      # puts `send_email: `, send_email
+      # If email parameters, use method to send email confirmation
+      if params[:send_email] == true
+        puts `send_email: `, send_email
+        customer_email = order.customer.email
+        send_notify_email(customer_email, order)
+      end
+
       render json: format_order_long(order), status: :created
     end
 
@@ -86,6 +105,9 @@ module Api
       rating = params[:restaurant_rating]
       id = params[:id]
 
+      puts "id: ", id
+      puts "rating: ", rating
+
       order = Order.find_by(id: id)
       return render_422_error("Invalid order") unless order
       return render_400_error("Restaurant rating required") unless rating.present?
@@ -97,6 +119,76 @@ module Api
 
     private
 
+    # Method to send sms confirmation
+    def send_sms_notification(c_phone_number, r_phone_number, message)
+      account_sid = ENV['TWILIO_ACCOUNT_SID']
+      auth_token = ENV['TWILIO_AUTH_TOKEN']
+      client = Twilio::REST::Client.new(account_sid, auth_token)
+
+      client.messages.create(
+        body: message,
+        from: c_phone_number,
+        to: r_phone_number
+      )
+    end
+
+    # Method to send email confirmation
+    def send_notify_email(email, order)
+      notify_secret_key = ENV['NOTIFY_SECRET_KEY']
+      notify_client_id = ENV['NOTIFY_CLIENT_ID']
+      notify_template_id = ENV['NOTIFY_TEMPLATE_ID']
+
+      url = "https://api.notify.eu/notification/send"
+
+      headers = {
+        'Content-Type' => 'application/json',
+        'X-ClientId' => notify_client_id,
+        'X-SecretKey' => notify_secret_key
+      }
+
+      payload = {
+        message: {
+          notificationType: notify_template_id,
+          language: "en",
+          params: {
+            order_id: order.id,
+            customer_name: order.customer&.user&.name,
+            restaurant_name: order.restaurant.name,
+            order_total_cost: format_cents_to_currency(order.total_cost),
+          },
+          transport: [
+            {
+              type: "SMTP",
+              recipients: {
+                to: [
+                  {
+                    name: order.customer&.user&.name,
+                    recipient: email
+                  }
+                ]
+              },
+            }
+          ]
+        }
+      }
+
+      response = HTTParty.post(url, headers: headers, body: payload.to_json)
+
+      # Handle the Notify.eu response as needed
+      if response.success?
+        puts "Email notification sent"
+        nil
+      else
+        render_422_error("Failed to send email notification")
+      end
+    end
+
+    # Currency Formatter
+    def format_cents_to_currency(cents)
+      amount_in_dollars = cents.to_f / 100
+      sprintf("$%.2f", amount_in_dollars)
+    end
+
     # Formats an order to its long form, in json
     def format_order_long(order)
       {
@@ -104,9 +196,12 @@ module Api
         customer_id: order.customer.id,
         customer_name: order.customer.user.name,
         customer_address: order.customer.address.full_address,
+        customer_phone: order.customer.phone,
+        customer_email: order.customer.email,
         restaurant_id: order.restaurant.id,
         restaurant_name: order.restaurant.name,
         restaurant_address: order.restaurant.address.full_address,
+        restaurant_phone: order.restaurant.phone,
         courier_id: order.courier&.id,
         courier_name: order.courier&.user&.name,
         status: order.order_status.name,
@@ -124,5 +219,6 @@ module Api
         updated_at: order.updated_at,
       }
     end
+
   end
 end

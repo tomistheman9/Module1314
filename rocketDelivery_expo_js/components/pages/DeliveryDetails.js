@@ -86,18 +86,34 @@ const DeliveryDetails = ({ navigation, userDetails }) => {
     );
   }
 
-  const renderOrder = ({ item }) => (
-    <View style={styles.orderRow}>
-      <Text style={styles.orderCell}>{item.id}</Text>
-      <Text style={styles.orderCell}>{item.restaurant_address}</Text>
-      <TouchableOpacity style={styles.orderCell} onPress={() => handleStatusChange(item)}>
-        <Text style={styles.statusText}>{item.status}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.viewButton} onPress={() => handleViewOrderDetails(item)}>
-        <Text style={styles.viewButtonText}>+</Text>
-      </TouchableOpacity>
-    </View>
-  );
+  const renderOrder = ({ item }) => {
+    let statusStyle = styles.statusText;
+    let statusText = item.status;
+
+    if (item.status === 'pending') {
+      statusStyle = styles.pendingStatusText;
+      statusText = 'PENDING';
+    } else if (item.status === 'delivered') {
+      statusStyle = styles.deliveredStatusText;
+      statusText = 'DELIVERED';
+    } else if (item.status === 'in progress') {
+      statusStyle = styles.inProgressStatusText;
+      statusText = 'IN PROGRESS';
+    }
+
+    return (
+      <View style={styles.orderRow}>
+        <Text style={styles.orderCell}>{item.id}</Text>
+        <Text style={styles.orderCell}>{item.restaurant_address}</Text>
+        <TouchableOpacity style={styles.orderCell} onPress={() => handleStatusChange(item)}>
+          <Text style={statusStyle}>{statusText}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.viewButton} onPress={() => handleViewOrderDetails(item)}>
+          <Text style={styles.viewButtonText}>+</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -201,6 +217,33 @@ const styles = StyleSheet.create({
   statusText: {
     fontSize: 16,
     color: '#007bff',
+  },
+  pendingStatusText: {
+    fontSize: 16,
+    color: '#fff',
+    backgroundColor: 'red',
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderRadius: 5,
+    overflow: 'hidden',
+  },
+  deliveredStatusText: {
+    fontSize: 16,
+    color: '#fff',
+    backgroundColor: 'green',
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderRadius: 5,
+    overflow: 'hidden',
+  },
+  inProgressStatusText: {
+    fontSize: 16,
+    color: '#fff',
+    backgroundColor: 'orange',
+    paddingHorizontal: 5,
+    paddingVertical: 2,
+    borderRadius: 5,
+    overflow: 'hidden',
   },
   viewButton: {
     width: 30,

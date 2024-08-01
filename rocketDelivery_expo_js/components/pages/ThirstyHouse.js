@@ -1,7 +1,5 @@
-// File: 79Ea
-
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, FlatList, Image, Button, TouchableOpacity, Modal, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Image, TouchableOpacity, Modal, ScrollView, Switch } from 'react-native';
 import { NGROK_URL } from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -14,6 +12,8 @@ const ThirstyHouse = ({ navigation, userDetails }) => {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isSuccessModalVisible, setIsSuccessModalVisible] = useState(false);
   const [isErrorModalVisible, setIsErrorModalVisible] = useState(false);
+  const [confirmByEmail, setConfirmByEmail] = useState(false);
+  const [confirmByPhone, setConfirmByPhone] = useState(false);
 
   useEffect(() => {
     const fetchRestaurantAndDishes = async () => {
@@ -80,6 +80,8 @@ const ThirstyHouse = ({ navigation, userDetails }) => {
       restaurant_id: 1,
       customer_id: userDetails.customer_id,
       products,
+      send_email: confirmByEmail,
+      send_sms: confirmByPhone,
     };
 
     try {
@@ -207,6 +209,22 @@ const ThirstyHouse = ({ navigation, userDetails }) => {
               <View style={styles.orderTotal}>
                 <Text style={styles.orderTotalText}>TOTAL</Text>
                 <Text style={styles.orderTotalAmount}>${(getTotalCost() / 100).toFixed(2)}</Text>
+              </View>
+              <View style={styles.switchContainer}>
+                <View style={styles.switchWrapper}>
+                  <Switch
+                    value={confirmByEmail}
+                    onValueChange={() => setConfirmByEmail(!confirmByEmail)}
+                  />
+                  <Text style={styles.switchLabel}>By Email</Text>
+                </View>
+                <View style={styles.switchWrapper}>
+                  <Switch
+                    value={confirmByPhone}
+                    onValueChange={() => setConfirmByPhone(!confirmByPhone)}
+                  />
+                  <Text style={styles.switchLabel}>By Phone</Text>
+                </View>
               </View>
             </ScrollView>
             <TouchableOpacity style={styles.confirmOrderButton} onPress={handleConfirmOrder}>
@@ -347,8 +365,8 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(0, 0, 0, 0.5)',
   },
   modalContainer: {
-    width: '80%',
-    maxHeight: '50%',
+    width: '90%', // Adjusted width
+    maxHeight: '80%', // Adjusted max height
     backgroundColor: '#fff',
     borderRadius: 10,
     overflow: 'hidden',
@@ -419,6 +437,19 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontWeight: 'bold',
     fontSize: 18,
+  },
+  switchContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 20,
+  },
+  switchWrapper: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  switchLabel: {
+    marginLeft: 10,
+    fontSize: 16,
   },
   successModalContainer: {
     width: '80%',

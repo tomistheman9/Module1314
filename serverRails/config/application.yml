@@ -1,0 +1,19 @@
+# Add configuration values here, as shown below.
+#
+# pusher_app_id: "2954"
+# pusher_key: 7381a978f7dd7f9a1117
+# pusger_secret: abdc3b896a0ffb85d3773
+# stripe_api_key: sk_test_230l093xOyW72XUYJHE4Dv2r
+# stripe_publishable_key: pk_test_ro9jV55NwGb1yYlQfzG17LHK
+#
+# production:
+# stripe_api_key: sk_live_EeHnL633i6zo4Iyq4v1KdV9H
+# stripe_publishable_key: pk_live_9lcthxpSIHbGwmd094101XVU
+
+TWILIO_ACCOUNT_SID: 'YOUR TWILIO CREDENTIAL'
+TWILIO_AUTH_TOKEN: 'YOUR TWILIO CREDENTIAL'
+TWILIO_PHONE_NUMBER: 'YOUR TWILIO CREDENTIAL'
+
+NOTIFY_TEMPLATE_ID: 'YOUR NOTIFY CREDENTIAL'
+NOTIFY_CLIENT_ID: 'YOUR NOTIFY CREDENTIAL'
+NOTIFY_SECRET_KEY: 'YOUR NOTIFY CREDENTIAL'
